@@ -88,7 +88,7 @@ export default class App extends React.Component {
       loading: false,
       loggedIn: false,
       signup: false,
-      email: 'joejoshw@gmail.com',
+      email: 'john.doe@email.com',
       password: '123456',
       firstName: 'New',
       lastName: 'User',

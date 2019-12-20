@@ -21,6 +21,21 @@ const styles = StyleSheet.create({
         borderColor: '#d3d3d3',
         borderBottomWidth: 1,
     },
+    dashboardWidgetText: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlignVertical: "center"
+    },
+    dashboardWidgetContainer: {
+        marginHorizontal: 100,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        borderColor: 'grey',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 5
+    },
     button: {
         marginTop: 30,
         marginBottom: 20,
