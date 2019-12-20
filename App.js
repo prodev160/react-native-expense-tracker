@@ -88,12 +88,12 @@ export default class App extends React.Component {
       loading: false,
       loggedIn: false,
       signup: false,
-      email: '',
-      password: '',
-      firstName: '',
-      lastName: '',
+      email: 'joejoshw@gmail.com',
+      password: '123456',
+      firstName: 'New',
+      lastName: 'User',
       loginError: false,
-      loginErrorMessage: '',
+      loginErrorMessage: 'Test error',
       signupError: false,
       signupErrorMessage: ''
     };
@@ -104,7 +104,7 @@ export default class App extends React.Component {
      if (this.state.loggedIn == false) {
        if (this.state.signup) {
          return (
-          <View style={styles.container}>
+          <View style={styles.centerContainer}>
           <Text style={styles.titleText}>Expense Tracker</Text>
           <Text style={styles.subtitleText}>User Registration</Text>
           <TextInput
@@ -145,7 +145,7 @@ export default class App extends React.Component {
          );
        } else {
         return (
-          <View style={styles.container}>
+          <View style={styles.centerContainer}>
                 <Text style={styles.titleText}>Expense Tracker</Text>
                 <Text style={styles.subtitleText}>User Login</Text>
                 <TextInput

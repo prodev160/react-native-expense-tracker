@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Text, View, TouchableOpacity, Button
+    Text, View, TouchableOpacity, Button, SafeAreaView
  } from 'react-native';
 
  import {f, auth, database } from '../config/config';
@@ -38,20 +38,25 @@ import {
     render() {
         const styles = appStyle();
         return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <SafeAreaView style={styles.droidSafeArea}>
             { this.state.loggedin == true ? (
-                <View style={styles.container}>
-                    <Button title="Log Out" onPress={this.logoff}></Button>
-                </View>
-                
-            ) : (
                 <View>
+                   <Text style={{textAlign: "center",  fontSize: 32, borderBottomColor: "grey", borderBottomWidth: 1}}>Expense Tracker</Text>
+                   <View style={{flex: 1}}>
+                    <Text></Text>
+                   </View>
+                   <View>
+                    <Button title="Logout" onPress={this.logoff}/>
+                   </View>
+                </View>
+            ) : (
+                <View style={styles.centerContainer}>
                     <Text>You are not logged in</Text>
                     <Text>Please log in to view this page</Text>
                 </View>                
             )} 
             
-            </View>
+            </SafeAreaView>
         )
     }
  }
