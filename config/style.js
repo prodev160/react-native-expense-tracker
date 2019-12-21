@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
         textAlignVertical: "center"
     },
     dashboardWidgetContainer: {
-        marginHorizontal: 100,
+        marginHorizontal: 50,
+        paddingHorizontal: 10,
         justifyContent: 'space-between',
         flexDirection: 'row',
         borderColor: 'grey',

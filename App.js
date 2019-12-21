@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Dashboard from './screens/Dashboard';
 import Expenses from './screens/Expenses';
 import Income from './screens/Income';
+import Accounts from './screens/Accounts';
 
 import {f, auth, database} from './config/config';
 import { TextInput } from 'react-native-gesture-handler';
@@ -16,12 +17,13 @@ import firebase from 'firebase';
 const MainStack = createAppContainer(createBottomTabNavigator(
   {
     Dashboard: { screen: Dashboard },
+    Accounts: { screen: Accounts },
     Income: { screen: Income },
     Expenses: { screen: Expenses },
   },
   {
     defaultNavigationOptions: {
-      tabBarVisible: false,
+      tabBarVisible: true,
     },
   }
 ));

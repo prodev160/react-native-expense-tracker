@@ -137,8 +137,7 @@ import {
                         >Expense Tracker</Text>
                    </View>
                    <View style={{flex: 1}}>
-                       <Text style={{textAlign: "center", fontWeight: "bold"}}>December 2019</Text>
-                       <Text style={{paddingBottom: 25}}>{this.state.user.uid}</Text>
+                       <Text style={{marginBottom:50, marginTop:20, textAlign: "center", fontWeight: "bold"}}>December 2019</Text>
                        <TouchableOpacity>
                       <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Accounts</Text>
