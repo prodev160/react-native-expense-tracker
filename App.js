@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, View, YellowBox, Button } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import Dashboard from './screens/Dashboard';
 import Expenses from './screens/Expenses';
@@ -14,7 +15,7 @@ import appStyle from './config/style';
 
 import firebase from 'firebase';
 
-const MainStack = createAppContainer(createBottomTabNavigator(
+const MainStack = createAppContainer(createStackNavigator(
   {
     Dashboard: { screen: Dashboard },
     Accounts: { screen: Accounts },
@@ -23,7 +24,7 @@ const MainStack = createAppContainer(createBottomTabNavigator(
   },
   {
     defaultNavigationOptions: {
-      tabBarVisible: true,
+      tabBarVisible: false,
     },
   }
 ));

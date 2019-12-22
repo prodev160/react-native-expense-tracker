@@ -32,13 +32,18 @@ import {
         });
     }
 
+    static navigationOptions = {
+        title: 'Accounts',
+      };
+
     render() {
         const styles = appStyle();
         return (
             <SafeAreaView style={styles.container}>
             { this.state.loggedin == true ? (
-                <View style={{flexDirection: "row", borderBottomColor: "grey", borderBottomWidth: 2}}>
-                    <Text style={styles.subtitleText}>Accounts</Text>
+                <View>
+                    
+                   
                 </View>
             ) : (
                 <View>
