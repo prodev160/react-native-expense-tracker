@@ -1,17 +1,20 @@
 import React from 'react';
 import {
-    Text, View, TouchableOpacity, Button, SafeAreaView
+    Text, View, FlatList, TouchableOpacity, Button, SafeAreaView
  } from 'react-native';
 
  import {f, auth, database } from '../config/config';
  import appStyle from '../config/style';
- import  '../config/functions';
+ import addCommas from  '../config/functions';
 
  class Accounts extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loggedin: false
+            loggedin: false,
+            user: null,
+            accounts: [],
+            refreshing: false,
         }
     }
 
@@ -21,8 +24,10 @@ import {
             if (user) {
                 //Logged in
                 that.setState({
-                    loggedin: true
+                    loggedin: true,
+                    user: user
                 });
+                that.fetchAccounts();
             } else {
                 //Not logged in
                 that.setState({
@@ -32,18 +37,63 @@ import {
         });
     }
 
+    fetchAccounts = () => {
+        var that = this;
+        database.collection("accounts")
+        .where("uid", "==", that.state.user.uid)
+        .onSnapshot(function(snapshot) {
+            var accounts = [];
+            snapshot.forEach(function(doc) {
+                var account = doc.data();
+                account.formattedValue = addCommas(account.currentBalance);
+                console.log(account.formattedValue);
+                accounts.push(account);
+            });
+            that.setState({
+                accounts: accounts
+            })
+        } );
+    }
+
     static navigationOptions = {
         title: 'Accounts',
+        headerRight: () => (
+            <Button
+              onPress={() => alert('This is a button!')}
+              title="New Account"
+            />
+          ),
       };
+
+    renderRow({item, index}) {
+        return (
+            
+            <TouchableOpacity>
+                
+                <View style={{marginHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "grey"}}>
+                    <View>
+                        <Text style={{fontWeight: "bold"}}>{item.accountName}</Text>
+                        {item.currentBalance > 0 ? (<Text style={{color: "green"}}>{item.currency} {item.formattedValue}</Text>)
+                        : (<Text style={{color: "red"}}>{item.currency} {item.formattedValue}</Text>)}
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
 
     render() {
         const styles = appStyle();
         return (
             <SafeAreaView style={styles.container}>
             { this.state.loggedin == true ? (
-                <View>
-                    
-                   
+                <View style={{flex: 1}}>
+                    <FlatList
+                        data = {this.state.accounts}
+                        keyExtractor={(item, index) => index.toString()}
+                        onRefresh={this.fetchAccounts}
+                        refreshing={this.state.refreshing}
+                        renderItem={this.renderRow}
+                    />
                 </View>
             ) : (
                 <View>

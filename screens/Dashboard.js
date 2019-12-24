@@ -5,7 +5,7 @@ import {
 
  import {f, auth, database } from '../config/config';
  import appStyle from '../config/style';
- import  '../config/functions';
+ import addCommas from  '../config/functions';
 
  class Dashboard extends React.Component {
     constructor(props) {
@@ -146,6 +146,7 @@ import {
                     user: user,
                     transactions: []
                 });
+                console.log(user);
                 that.loadTransactions();
                 that.loadAccounts();
                 that.loadCategories();
@@ -184,31 +185,31 @@ import {
                        >
                       <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Accounts</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.accountsTotal}</Text>
+                           <Text style={styles.dashboardWidgetText}>{this.state.user.currencySymbol} {addCommas(this.state.accountsTotal)}</Text>
                        </View>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => navigate('Expenses')}>
                       <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Expenses</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.expenseTotal}</Text>
+                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.expenseTotal)}</Text>
                        </View>
                       </TouchableOpacity>
                        <TouchableOpacity onPress={() => navigate('Income')}>
                        <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Income</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.incomeTotal}</Text>
+                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.incomeTotal)}</Text>
                        </View>
                        </TouchableOpacity>
                        <TouchableOpacity>
                        <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Transfers</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.transfersTotal}</Text>
+                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.transfersTotal)}</Text>
                        </View>
                        </TouchableOpacity>
                        <TouchableOpacity>
                        <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Budget</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.categoriesTotal}</Text>
+                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.categoriesTotal)}</Text>
                        </View>
                        </TouchableOpacity>
                    </View>

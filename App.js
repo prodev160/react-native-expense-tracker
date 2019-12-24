@@ -12,6 +12,7 @@ import Accounts from './screens/Accounts';
 import {f, auth, database} from './config/config';
 import { TextInput } from 'react-native-gesture-handler';
 import appStyle from './config/style';
+import addCommas from './config/functions';
 
 import firebase from 'firebase';
 
