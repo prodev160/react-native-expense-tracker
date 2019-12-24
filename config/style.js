@@ -27,15 +27,15 @@ const styles = StyleSheet.create({
         textAlignVertical: "center"
     },
     dashboardWidgetContainer: {
-        marginHorizontal: 50,
-        paddingHorizontal: 10,
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        borderColor: 'grey',
+        flexDirection: "row", 
+        justifyContent: "space-evenly",
+        borderRadius: 20,
         borderWidth: 1,
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 5
+        borderColor: "grey",
+        marginLeft: 2,
+        marginTop: 6,
+        marginRight: 2,
+        padding: 2
     },
     button: {
         marginTop: 30,

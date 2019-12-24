@@ -6,6 +6,9 @@ import {
  import {f, auth, database } from '../config/config';
  import appStyle from '../config/style';
  import addCommas from  '../config/functions';
+ import { ScrollView } from 'react-native-gesture-handler';
+ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+
 
  class Dashboard extends React.Component {
     constructor(props) {
@@ -193,46 +196,119 @@ import {
         return (
             <SafeAreaView style={styles.droidSafeArea}>
             { this.state.loggedin == true ? (
-                <View style={styles.container} >
-                   <View style={{flex: 1}}>
-                       <Text style={{marginBottom:50, marginTop:20, textAlign: "center", fontWeight: "bold"}}>December 2019</Text>
-                       <TouchableOpacity
-                        onPress={() => navigate('Accounts')}
-                       >
-                      <View style={styles.dashboardWidgetContainer}>
-                           <Text style={styles.dashboardWidgetText}>Accounts</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.accountsTotal)}</Text>
-                       </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigate('Expenses')}>
-                      <View style={styles.dashboardWidgetContainer}>
-                           <Text style={styles.dashboardWidgetText}>Expenses</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.expenseTotal)}</Text>
-                       </View>
-                      </TouchableOpacity>
-                       <TouchableOpacity onPress={() => navigate('Income')}>
-                       <View style={styles.dashboardWidgetContainer}>
-                           <Text style={styles.dashboardWidgetText}>Income</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.incomeTotal)}</Text>
-                       </View>
-                       </TouchableOpacity>
-                       <TouchableOpacity>
-                       <View style={styles.dashboardWidgetContainer}>
-                           <Text style={styles.dashboardWidgetText}>Transfers</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.transfersTotal)}</Text>
-                       </View>
-                       </TouchableOpacity>
-                       <TouchableOpacity>
-                       <View style={styles.dashboardWidgetContainer}>
-                           <Text style={styles.dashboardWidgetText}>Budget</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.categoriesTotal)}</Text>
-                       </View>
-                       </TouchableOpacity>
-                   </View>
-                   <View>
-                    <Button title="Logout" onPress={this.logoff}/>
-                   </View>
-                </View>
+                <View style={{flex: 1}}>
+                    <ScrollView>
+                        <View style={{flex: 1, backgroundColor: 'white'}}>
+                            <View style={{
+                                height: 200, 
+                                backgroundColor: '#f4511e', 
+                                borderBottomLeftRadius: 50, 
+                                borderBottomRightRadius: 50
+                                }}>
+                                <View style={{
+                                    flexDirection: 'row', 
+                                    justifyContent: "space-evenly",
+                                    marginTop: 20, 
+                                    marginLeft: 20
+                                    }}>
+                                    <View>
+                                        <Text style={{
+                                            fontSize: 28,
+                                            fontWeight: "bold",
+                                            color: "white"
+                                        }}>{this.state.dbUser.currencySymbol}{addCommas(this.state.accountsTotal)}</Text>
+                                        <Text style={{color: "white", fontSize: 12}}>Account Balance (All Accounts)</Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        onPress={() => navigate('Accounts')}
+                                    >
+                                    <View style={{
+                                        marginLeft: 20,
+                                        marginBottom: 20,
+                                        width: 150,
+                                        borderRadius: 30,
+                                        height: 50,
+                                        backgroundColor: "#33B2FF",
+                                        shadowOpacity: 0.6,
+                                        shadowRadius: 4,
+                                        elevation: 3,
+                                    }}>
+                                        <Text style={{
+                                            textAlign: "center",
+                                            padding: 10,
+                                            fontSize: 20,
+                                            color: "white",
+                                            textAlignVertical: "center"
+                                        }}>Accounts</Text>
+                                    </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{
+                                marginHorizontal: 20, 
+                                height: 330, 
+                                borderRadius: 10, 
+                                marginTop: 10, 
+                                position: "absolute", 
+                                top: 80, 
+                                width: '90%',
+                                backgroundColor: "white",
+                                shadowOpacity: 0.6,
+                                shadowRadius: 4,
+                                elevation: 3,
+                                }}>
+                                    <View style={{
+                                        height: 60,
+                                        width: '90%',
+                                        left: '5%',
+                                        top: 10,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-evenly'
+                                    }}>
+                                        <View style={{alignItems: "center"}}>
+                                            <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
+                                            <Text style={{color: "grey"}}>Transfer</Text>
+                                        </View>
+
+                                        <View style={{alignItems: "center"}}>
+                                            <MaterialCommunityIcons name="briefcase-upload" size={32} color="green" />
+                                            <Text style={{color: "grey"}}>Income</Text>
+                                        </View>
+
+                                        <View style={{alignItems: "center"}}>
+                                            <MaterialCommunityIcons name="briefcase-download" size={32} color="red" />
+                                            <Text style={{color: "grey"}}>Expense</Text>
+                                        </View>
+                                    </View>
+                                    <View style={{flex: 1, margin: 10, paddingTop: 60}}>
+                                        <View style={styles.dashboardWidgetContainer}>
+                                            <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
+                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Transfers</Text>
+                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.transfersTotal)}</Text>
+                                        </View>
+                                        <View style={styles.dashboardWidgetContainer}>
+                                            <Feather name="chevrons-up" size={32} color="green" />
+                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Income</Text>
+                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.incomeTotal)}</Text>
+                                        </View>
+                                        <View style={styles.dashboardWidgetContainer}>
+                                            <Feather name="chevrons-down" size={32} color="red" />
+                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Expenses</Text>
+                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.expenseTotal)}</Text>
+                                        </View>
+                                        <View style={styles.dashboardWidgetContainer}>
+                                            <MaterialCommunityIcons name="rotate-3d" size={32} color="purple" />
+                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Budget</Text>
+                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.categoriesTotal)}</Text>
+                                        </View>
+                                    </View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                    <View>
+                        <Button title="Logout" onPress={this.logoff}/>
+                    </View>
+               </View>
             ) : (
                 <View style={styles.centerContainer}>
                     <Text>You are not logged in</Text>
