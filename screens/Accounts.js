@@ -46,7 +46,7 @@ import {
             snapshot.forEach(function(doc) {
                 var account = doc.data();
                 account.formattedValue = addCommas(account.currentBalance);
-                console.log(account.formattedValue);
+                
                 accounts.push(account);
             });
             that.setState({

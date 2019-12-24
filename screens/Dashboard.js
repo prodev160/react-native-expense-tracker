@@ -18,6 +18,8 @@ import {
             transfers: [],
             accounts: [],
             categories: [],
+            subcategories: [],
+            dbUser: [],
             loading: true,
             refresh: false,
             expenseTotal: 0,
@@ -25,7 +27,6 @@ import {
             transfersTotal: 0,
             accountsTotal: 0,
             categoriesTotal: 0,
-            subcategories: [],
         }
     }
 
@@ -106,6 +107,18 @@ import {
         });
     }
 
+    loadUser = () => {
+        var that = this;
+        var ref = database.collection("users").doc(that.state.user.uid);
+        ref.get().then(function(doc) {
+            if (doc.exists) {
+                that.setState({dbUser: doc.data()});
+            } else {
+                console.log("User doc not found for " + that.state.user.uid);
+            }
+        })
+    }
+
     calculateTotals = () => {
         var exp = 0;
         var inc = 0;
@@ -124,8 +137,11 @@ import {
         for (var i = 0; i < this.state.accounts.length; i++) {
             acc += this.state.accounts[i].currentBalance;
         }
-        for (var i = 0; i < this.state.subcategories.length; i++) {
-          budg += this.state.subcategories[i].budget;
+        for (var i = 0; i < this.state.categories.length; i++) {
+          for (var j = 0; j < this.state.subcategories.length; j++) {
+              if (this.state.subcategories[j].categoryId == this.state.categories[i].id)
+                budg += this.state.subcategories[j].budget;
+          }
         }
         this.setState({
             expenseTotal: exp,
@@ -146,11 +162,11 @@ import {
                     user: user,
                     transactions: []
                 });
-                console.log(user);
                 that.loadTransactions();
                 that.loadAccounts();
                 that.loadCategories();
                 that.loadSubCategories();
+                that.loadUser();
             } else {
                 //Not logged in
                 that.setState({
@@ -185,31 +201,31 @@ import {
                        >
                       <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Accounts</Text>
-                           <Text style={styles.dashboardWidgetText}>{this.state.user.currencySymbol} {addCommas(this.state.accountsTotal)}</Text>
+                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.accountsTotal)}</Text>
                        </View>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => navigate('Expenses')}>
                       <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Expenses</Text>
-                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.expenseTotal)}</Text>
+                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.expenseTotal)}</Text>
                        </View>
                       </TouchableOpacity>
                        <TouchableOpacity onPress={() => navigate('Income')}>
                        <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Income</Text>
-                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.incomeTotal)}</Text>
+                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.incomeTotal)}</Text>
                        </View>
                        </TouchableOpacity>
                        <TouchableOpacity>
                        <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Transfers</Text>
-                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.transfersTotal)}</Text>
+                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.transfersTotal)}</Text>
                        </View>
                        </TouchableOpacity>
                        <TouchableOpacity>
                        <View style={styles.dashboardWidgetContainer}>
                            <Text style={styles.dashboardWidgetText}>Budget</Text>
-                           <Text style={styles.dashboardWidgetText}>{addCommas(this.state.categoriesTotal)}</Text>
+                           <Text style={styles.dashboardWidgetText}>{this.state.dbUser.currencySymbol}{addCommas(this.state.categoriesTotal)}</Text>
                        </View>
                        </TouchableOpacity>
                    </View>
