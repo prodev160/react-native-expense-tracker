@@ -262,6 +262,7 @@ import {
                                         width: '90%',
                                         left: '5%',
                                         top: 10,
+                                        paddingTop: 30,
                                         flexDirection: 'row',
                                         justifyContent: 'space-evenly'
                                     }}>
@@ -281,11 +282,13 @@ import {
                                         </View>
                                     </View>
                                     <View style={{flex: 1, margin: 10, paddingTop: 60}}>
-                                        <View style={styles.dashboardWidgetContainer}>
-                                            <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
-                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Transfers</Text>
-                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.transfersTotal)}</Text>
-                                        </View>
+                                        <TouchableOpacity onPress={() => (navigate('Transfers'))} >
+                                            <View style={styles.dashboardWidgetContainer}>
+                                                <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
+                                                <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Transfers</Text>
+                                                <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.transfersTotal)}</Text>
+                                            </View>
+                                        </TouchableOpacity>
                                         <View style={styles.dashboardWidgetContainer}>
                                             <Feather name="chevrons-up" size={32} color="green" />
                                             <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Income</Text>
