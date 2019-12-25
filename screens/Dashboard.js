@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Text, View, TouchableOpacity, Button, SafeAreaView
+    Text, View, TouchableOpacity, Button, SafeAreaView, FlatList
  } from 'react-native';
 
  import {f, auth, database } from '../config/config';
@@ -16,6 +16,7 @@ import {
         this.state = {
             loggedin: false,
             user: null,
+            transactions: [],
             expenses: [],
             income: [],
             transfers: [],
@@ -49,21 +50,26 @@ import {
                 var expenses = [];
                 var income = [];
                 var transfers = [];
-                
+                var transactions = [];
                 snapshot.forEach(function(doc) {
-                    if (doc.data().transType == "Expense")
-                        expenses.push(doc.data());
-                    if (doc.data().transType == "Income")
-                        income.push(doc.data());
-                    if (doc.data().transType == "Transfer")
-                        transfers.push(doc.data());
+                    var transaction = doc.data();
+                    transaction.dateString = that.timeConverter(transaction.transactionDate.seconds)
+                    transactions.push(transaction);
+                    console.log(transaction);
+                    if (transaction.transType == "Expense")
+                        expenses.push(transaction);
+                    if (transaction.transType == "Income")
+                        income.push(transaction);
+                    if (transaction.transType == "Transfer")
+                        transfers.push(transaction);
                 });
                 that.setState({
                     refresh: false,
                     loading: false,
                     expenses: expenses,
                     income: income,
-                    transfers: transfers
+                    transfers: transfers,
+                    transactions: transactions
                 });
             });
     }
@@ -179,6 +185,45 @@ import {
         });
     };
 
+    pluralCheck = (s) => {
+        if (s==1) {
+            return ' ago';
+        } else {
+            return 's ago';
+        }
+    }
+
+    timeConverter = (timestamp) => {
+        var a = new Date(timestamp * 1000);
+        var seconds = Math.floor((new Date() - a) / 1000);
+        var interval = Math.floor(seconds / 31536000);
+        if (interval > 1) {
+            return interval + ' year' + this.pluralCheck(interval);
+        }
+
+       interval = Math.floor(seconds / 2592000);
+       if (interval > 1) {
+           return interval + ' month' + this.pluralCheck(interval);
+       }
+
+       interval = Math.floor(seconds / 86400);
+       if (interval > 1) {
+           return interval + ' day' + this.pluralCheck(interval);
+       }
+
+       interval = Math.floor(seconds / 3600);
+       if (interval > 1) {
+           return interval + ' hour' + this.pluralCheck(interval);
+       }
+
+       interval = Math.floor(seconds / 60);
+       if (interval > 1) {
+           return interval + ' minute' + this.pluralCheck(interval);
+       }
+
+       return Math.floor(seconds) + ' second' + this.pluralCheck(seconds);
+    }
+
     static navigationOptions = {
         title: 'Expense Tracker',
         headerStyle: {
@@ -290,28 +335,85 @@ import {
                                             </View>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => (navigate('Income'))} >
-                                        <View style={styles.dashboardWidgetContainer}>
-                                            <Feather name="chevrons-up" size={32} color="green" />
-                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Income</Text>
-                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.incomeTotal)}</Text>
-                                        </View>
+                                            <View style={styles.dashboardWidgetContainer}>
+                                                <Feather name="chevrons-up" size={32} color="green" />
+                                                <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Income</Text>
+                                                <Text style={{marginRight: 5, marginTop: 5, color: "green", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.incomeTotal)}</Text>
+                                            </View>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => (navigate('Expenses'))} >
-                                        <View style={styles.dashboardWidgetContainer}>
-                                            <Feather name="chevrons-down" size={32} color="red" />
-                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Expenses</Text>
-                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.expenseTotal)}</Text>
-                                        </View>
+                                            <View style={styles.dashboardWidgetContainer}>
+                                                <Feather name="chevrons-down" size={32} color="red" />
+                                                <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Expenses</Text>
+                                                <Text style={{marginRight: 5, marginTop: 5, color: "red", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.expenseTotal)}</Text>
+                                            </View>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => (navigate('Budget'))} >
-                                        <View style={styles.dashboardWidgetContainer}>
-                                            <MaterialCommunityIcons name="rotate-3d" size={32} color="purple" />
-                                            <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Budget</Text>
-                                            <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.categoriesTotal)}</Text>
-                                        </View>
+                                            <View style={styles.dashboardWidgetContainer}>
+                                                <MaterialCommunityIcons name="rotate-3d" size={32} color="purple" />
+                                                <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Budget</Text>
+                                                <Text style={{marginRight: 5, marginTop: 5, color: "purple", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.categoriesTotal)}</Text>
+                                            </View>
                                         </TouchableOpacity>
                                     </View>
                             </View>
+                        </View>
+                        <View
+                            style={{
+                                marginHorizontal: 20, 
+                                height: 200, 
+                                borderRadius: 10, 
+                                marginTop: 10, 
+                                position: "absolute", 
+                                top: 420, 
+                                width: '90%',
+                                backgroundColor: "white",
+                                shadowOpacity: 0.6,
+                                shadowRadius: 4,
+                                elevation: 3,
+                            }}
+                        >
+                            <Text style={{fontWeight: 'bold', marginTop: 10, marginLeft: 10}}>Recent transactions</Text>
+                            <FlatList
+                                style={styles.videos_flatList}
+                                horizontal={true}
+                                data={this.state.transactions}
+                                renderItem={({item}) => 
+                                    <TouchableOpacity>
+                                        <View style={{
+                                            borderWidth: 2,
+                                            borderColor: 'grey',
+                                            elevation: 3,
+                                            borderRadius: 10,
+                                            width: 100,
+                                            height: '90%',
+                                            marginRight: 20,
+                                            marginBottom: 20,
+                                            padding: 10
+                                        }}>
+                                            <Text style={{fontWeight: 'bold'}}>{item.transType}</Text>
+                                            <Text>{item.dateString}</Text>
+                                            <Text>{this.state.dbUser.currencySymbol}{addCommas(item.transactionAmount)}</Text>
+                                            <Text>{item.description}</Text>
+                                            <Text>{item.notes}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                }
+
+                                ItemSeparatorComponent={() => {
+                                    return (
+                                        <View
+                                            style={{
+                                            height: "100%",
+                                            width: 2,
+                                            backgroundColor: "white",//"#CED0CE",
+                                            }}
+                                        />
+                                    );
+                                }}
+
+                                keyExtractor={(item, index) => index.toString()}
+/>
                         </View>
                     </ScrollView>
                     <View>
