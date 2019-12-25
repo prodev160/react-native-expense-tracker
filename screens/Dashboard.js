@@ -289,21 +289,27 @@ import {
                                                 <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.transfersTotal)}</Text>
                                             </View>
                                         </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => (navigate('Income'))} >
                                         <View style={styles.dashboardWidgetContainer}>
                                             <Feather name="chevrons-up" size={32} color="green" />
                                             <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Income</Text>
                                             <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.incomeTotal)}</Text>
                                         </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => (navigate('Expenses'))} >
                                         <View style={styles.dashboardWidgetContainer}>
                                             <Feather name="chevrons-down" size={32} color="red" />
                                             <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Expenses</Text>
                                             <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.expenseTotal)}</Text>
                                         </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => (navigate('Budget'))} >
                                         <View style={styles.dashboardWidgetContainer}>
                                             <MaterialCommunityIcons name="rotate-3d" size={32} color="purple" />
                                             <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Budget</Text>
                                             <Text style={{marginRight: 5, marginTop: 5, color: "blue", fontWeight: "bold"}}>{this.state.dbUser.currencySymbol}{addCommas(this.state.categoriesTotal)}</Text>
                                         </View>
+                                        </TouchableOpacity>
                                     </View>
                             </View>
                         </View>
