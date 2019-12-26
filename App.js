@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, YellowBox, Button } from 'react-native';
+import { TouchableOpacity, Text, View, YellowBox, Button, ActivityIndicator } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -114,7 +114,15 @@ export default class App extends React.Component {
     const styles = appStyle();
     if (this.state.loading) {
       return (
-        <View style={styles.centerContainer}><Text>Loading....</Text></View>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator
+            animating={true}
+            color="black"
+            size="large"
+            style={{margin: 15}}
+        />
+        <Text>Loading...</Text>
+        </View>
       )
     }
     else if (this.state.loggedIn == false) {
