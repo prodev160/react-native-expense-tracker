@@ -59,7 +59,7 @@ import {
         title: 'Accounts',
         headerRight: () => (
             <Button
-              onPress={() => alert('This is a button!')}
+              onPress={() =>  this.props.navigation.navigate('AccountDetails')}
               title="New Account"
             />
           ),

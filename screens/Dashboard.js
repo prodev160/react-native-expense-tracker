@@ -55,7 +55,6 @@ import {
                     var transaction = doc.data();
                     transaction.dateString = that.timeConverter(transaction.transactionDate.seconds)
                     transactions.push(transaction);
-                    console.log(transaction);
                     if (transaction.transType == "Expense")
                         expenses.push(transaction);
                     if (transaction.transType == "Income")

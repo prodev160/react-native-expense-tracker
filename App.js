@@ -8,6 +8,7 @@ import Dashboard from './screens/Dashboard';
 import Expenses from './screens/Expenses';
 import Income from './screens/Income';
 import Accounts from './screens/Accounts';
+import AccountDetails from './screens/AccountDetails';
 
 import {f, auth, database} from './config/config';
 import { TextInput } from 'react-native-gesture-handler';
@@ -22,6 +23,7 @@ const MainStack = createAppContainer(createStackNavigator(
     Accounts: { screen: Accounts },
     Income: { screen: Income },
     Expenses: { screen: Expenses },
+    AccountDetails: { screen: AccountDetails },
   },
   {
     defaultNavigationOptions: {
@@ -37,7 +39,8 @@ export default class App extends React.Component {
       if (user) {
           //Logged in
           that.setState({
-            loggedIn: true
+            loggedIn: true,
+            loading: false
           });
       } else {
           //Not logged in
@@ -50,6 +53,7 @@ export default class App extends React.Component {
 
   login = async() => {
     var that = this;
+    that.setState({loading: true})
     try{
       console.log('Starting auth...');
       await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
@@ -61,6 +65,8 @@ export default class App extends React.Component {
   }
 
   signup = async() => {
+    var that = this;
+    that.setState({loading: true})
     try{
       console.log('Starting signup');
       await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
@@ -105,7 +111,12 @@ export default class App extends React.Component {
 
   render() {
     const styles = appStyle();
-     if (this.state.loggedIn == false) {
+    if (this.state.loading) {
+      return (
+        <View style={styles.centerContainer}><Text>Loading....</Text></View>
+      )
+    }
+    else if (this.state.loggedIn == false) {
        if (this.state.signup) {
          return (
           <View style={styles.centerContainer}>
