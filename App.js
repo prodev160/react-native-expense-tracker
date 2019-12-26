@@ -85,6 +85,7 @@ export default class App extends React.Component {
       console.log('User saved');
     } catch(error) {
       alert(error);
+      that.setState({loading: false})
     }
   }
 
