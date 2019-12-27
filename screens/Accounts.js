@@ -55,15 +55,20 @@ import {
         } );
     }
 
-    static navigationOptions = {
+    openAccountDetails(accountID) {
+        const { navigate } = this.props.navigation;
+        navigate('AccountDetails');
+    }
+
+    static navigationOptions = ({navigation}) => ({
         title: 'Accounts',
         headerRight: () => (
             <Button
-              onPress={() =>  this.props.navigation.navigate('AccountDetails')}
+              onPress={() =>  navigation.navigate('AccountDetails')}
               title="New Account"
             />
           ),
-      };
+      });
 
     renderRow({item, index}) {
         return (

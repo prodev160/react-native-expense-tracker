@@ -31,10 +31,11 @@ import {
     }
 
     render() {
+        const { navigate } = this.props.navigation;
         return (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             { this.state.loggedin == true ? (
-                <Text>Income</Text>
+                <Text>Account Details</Text>
             ) : (
                 <View>
                     <Text>You are not logged in</Text>
