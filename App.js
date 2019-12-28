@@ -45,7 +45,8 @@ export default class App extends React.Component {
       } else {
           //Not logged in
           that.setState({
-            loggedIn: false
+            loggedIn: false,
+            loading: false
           });
       }
   });
@@ -61,6 +62,7 @@ export default class App extends React.Component {
     } catch(error) {
       console.log('Auth error ' + error);
       alert(error);
+      that.setState({loading: false});
     }
   }
 
