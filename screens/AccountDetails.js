@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
-    Text, View, TouchableOpacity, TextInput, Button
+    Text, View, TouchableOpacity, TextInput, Button, Platform
  } from 'react-native';
  
+ import DateTimePicker from '@react-native-community/datetimepicker';
 
  import {f, auth, database } from '../config/config';
  import appStyle from '../config/style';
@@ -11,6 +12,8 @@ import {
     constructor(props) {
         super(props);
         this.state = {
+            user: null,
+            dbUser: null,
             loggedin: false,
             saveError: false,
             errorMessage: '',
@@ -18,8 +21,28 @@ import {
             accountNumber: '',
             accountType: 'Cash',
             accountBalance: 0.00,
-            balanceAsOf: new Date(),
+            asOfDate: new Date(),
+            showAsOf: false,
+            mode: 'date',
         }
+    }
+
+    setAsOfDate = (event, asOfDate) => {
+        this.setState({
+            showAsOf: Platform.OS === 'ios' ? true : false,
+            asOfDate
+        })
+    }
+
+    show = mode => {
+        this.setState({
+            showAsOf: true,
+            mode
+        })
+    }
+
+    datepicker = () => {
+        this.show('date');
     }
 
     componentDidMount = () => {
@@ -28,28 +51,61 @@ import {
             if (user) {
                 //Logged in
                 that.setState({
-                    loggedin: true
+                    loggedin: true,
+                    user: user
                 });
+                that.loadUser();
             } else {
                 //Not logged in
                 that.setState({
-                    loggedin: false
+                    loggedin: false,
+                    user: null
                 });
             }
         });
     }
 
+    loadUser = () => {
+        var that = this;
+        var ref = database.collection("users").doc(that.state.user.uid);
+        ref.get().then(function(doc) {
+            if (doc.exists) {
+                that.setState({dbUser: doc.data()});
+            } else {
+                console.log("User doc not found for " + that.state.user.uid);
+            }
+        })
+    }
+
     save = async() => {
         var that = this;
-        var err = false;
-        if (that.accountName.length < 1)
-            err = true;
-        if (err) {
+        console.log("Saving account...")
+        f.firestore().collection("accounts").add({
+            accountName: that.state.accountName,
+            accountNo: that.state.accountNumber,
+            accountType: that.state.accountType,
+            openingBalance: parseFloat(that.state.accountBalance),
+            balanceAsOf: that.state.asOfDate,
+            currentBalance: parseFloat(that.state.accountBalance),
+            currency: that.state.dbUser.defaultCurrency,
+            uid: that.state.user.uid,
+            createdOn: new Date(),
+            allCredits: 0,
+            allDebits: 0
+        }).then(function (accountRef) {
+            console.log("Saved new account: " + accountRef.id);
+            that.props.navigation.navigate('Accounts');
+        }).catch(function (error) {
+            console.log("Error when saving account: " + error);
             that.setState({
-                saveError: true,
-                errorMessage: 'Error: Ensure that all fields have been filled in'
-            });
-        }
+                error: true,
+                errorMessage: error
+            })
+        })
+    }
+
+    hideDateSelectorIos = () => {
+        this.setState({showAsOf: false})
     }
 
     accTypeAlert() {
@@ -91,6 +147,24 @@ import {
                         onChangeText={accountBalance => this.setState({ accountBalance })}
                         placeholder='Account Balance'
                     />
+                    <TextInput
+                        style={styles.inputBox}
+                        onTouchStart={this.datepicker}
+                        editable={false}
+                        value={'Balance As Of: ' + this.state.asOfDate.toDateString()}
+                    />
+                    {
+                        this.state.showAsOf && <View>
+                            <DateTimePicker value={this.state.asOfDate}
+                                        mode={this.state.mode}
+                                        is24hour={true}
+                                        display="default"
+                                        onChange={this.setAsOfDate} />
+                            <View style={{flexDirection:"row"}}>
+                                {Platform.OS === 'ios' && <Button onPress={this.hideDateSelectorIos} title="Set Date"></Button> }
+                            </View>
+                            </View>
+                    }
                      {this.state.saveError ? <Text style={styles.errorText}>{this.state.errorMessage}</Text> : <Text></Text> }
                     <TouchableOpacity style={styles.button} onPress={this.save}>
                         <Text style={styles.buttonText}>Save Account</Text>
