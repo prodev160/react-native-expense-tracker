@@ -264,7 +264,7 @@ import {
                                         <Text style={{color: "white", fontSize: 12}}>Account Balance (All Accounts)</Text>
                                     </View>
                                     <TouchableOpacity
-                                        onPress={() => navigate('Accounts')}
+                                        onPress={() => navigate('Accounts', {dbUser: this.state.dbUser})}
                                     >
                                     <View style={{
                                         marginLeft: 20,

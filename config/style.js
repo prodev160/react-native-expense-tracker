@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
     },
     centerContainer: {
         flex: 1,
@@ -68,6 +68,10 @@ const styles = StyleSheet.create({
     subtitleText: {
         fontSize: 32,
         textAlign: 'center'
+    },
+    boldText18: {
+        fontSize: 18,
+        fontWeight: "bold"
     },
     errorText: {
         color: 'red',

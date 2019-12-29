@@ -12,6 +12,7 @@ import {
         super(props);
         this.state = {
             loggedin: false,
+            dbUser: this.props.navigation.state.params.dbUser,
             user: null,
             accounts: [],
             refreshing: false,
@@ -45,8 +46,17 @@ import {
             var accounts = [];
             snapshot.forEach(function(doc) {
                 var account = doc.data();
+                var epoch = account.createdOn.seconds;
+                if (account.balanceAsOf)
+                    epoch = account.balanceAsOf.seconds;
+
+                var asOf = new Date(epoch * 1000);
+                
+                account.id = doc.id;
                 account.formattedValue = addCommas(account.currentBalance);
                 account.navigation = that.props.navigation;
+                account.symbol = that.state.dbUser.currencySymbol;
+                account.asOf = asOf.toDateString();
                 accounts.push(account);
             });
             that.setState({
@@ -73,18 +83,17 @@ import {
     renderRow({item, index}) {
         const styles = appStyle();
         var that = this;
-        console.log(item);
         return (
             
             <TouchableOpacity onPress={() => {
-                item.navigation.navigate('AccountSummary');
+                item.navigation.navigate('AccountSummary', {account: item, accountName: item.accountName});
             }}>
                 
                 <View style={styles.rowStyle}>
                     <View>
                         <Text style={{fontWeight: "bold"}}>{item.accountName}</Text>
-                        {item.currentBalance > 0 ? (<Text style={{color: "green"}}>{item.currency} {item.formattedValue}</Text>)
-                        : (<Text style={{color: "red"}}>{item.currency} {item.formattedValue}</Text>)}
+                        {item.currentBalance > 0 ? (<Text style={{color: "green"}}>{item.symbol}{item.formattedValue}</Text>)
+                        : (<Text style={{color: "red"}}>{item.symbol}{item.formattedValue}</Text>)}
                     </View>
                 </View>
             </TouchableOpacity>
