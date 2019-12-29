@@ -46,7 +46,7 @@ import {
             snapshot.forEach(function(doc) {
                 var account = doc.data();
                 account.formattedValue = addCommas(account.currentBalance);
-                
+                account.navigation = that.props.navigation;
                 accounts.push(account);
             });
             that.setState({
@@ -55,7 +55,7 @@ import {
         } );
     }
 
-    openAccountDetails(accountID) {
+    openAccountDetails(account){
         const { navigate } = this.props.navigation;
         navigate('AccountDetails');
     }
@@ -71,11 +71,16 @@ import {
       });
 
     renderRow({item, index}) {
+        const styles = appStyle();
+        var that = this;
+        console.log(item);
         return (
             
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+                item.navigation.navigate('AccountSummary');
+            }}>
                 
-                <View style={{marginHorizontal: 10, borderBottomWidth: 1, borderBottomColor: "grey"}}>
+                <View style={styles.rowStyle}>
                     <View>
                         <Text style={{fontWeight: "bold"}}>{item.accountName}</Text>
                         {item.currentBalance > 0 ? (<Text style={{color: "green"}}>{item.currency} {item.formattedValue}</Text>)

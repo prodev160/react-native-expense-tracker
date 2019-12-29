@@ -26,6 +26,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlignVertical: "center"
     },
+    rowStyle: {
+        marginHorizontal:  10, 
+        borderBottomWidth: 1, 
+        borderBottomColor: "grey"
+    },
     dashboardWidgetContainer: {
         flexDirection: "row", 
         justifyContent: "space-evenly",
