@@ -12,7 +12,8 @@ import {
         super(props);
         this.state = {
             loggedin: false,
-            account: this.props.navigation.state.params.account
+            account: this.props.navigation.state.params.account,
+            dbUser: this.props.navigation.state.params.dbUser
         }
     }
 
@@ -48,7 +49,6 @@ import {
 
     render() {
         const styles = appStyle();
-        const navigate = this.props.navigation.navigate;
         return (
             <View style={styles.container}>
             { this.state.loggedin == true ? (
@@ -81,7 +81,7 @@ import {
                     <View style={{marginLeft: 20, flexDirection: "row", justifyContent: "evenly-spaced"}}>
                         <Button title="Add Expense" />
                         <Button title="Add Income" />
-                        <Button onPress={() => {this.props.navigation.navigate('AccountTransactions'), {dbUser: this.state.dbUser, account: this.state.account}}} title="Transactions" />
+                        <Button onPress={() => {this.props.navigation.navigate('AccountTransactions', {accountName: this.state.account.accountName, dbUser: this.state.dbUser, account: this.state.account})}} title="Transactions" />
                     </View>
                 </View>
             ) : (

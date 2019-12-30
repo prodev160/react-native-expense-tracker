@@ -105,6 +105,7 @@ import {
     loadSubCategories = () => {
         var that = this;
         database.collection("subcategories")
+        .where("owner", "==", that.state.user.uid)
         .onSnapshot(function (snap){
             var subcategories = [];
             snap.forEach(function (subDoc) {
@@ -120,7 +121,9 @@ import {
         var ref = database.collection("users").doc(that.state.user.uid);
         ref.get().then(function(doc) {
             if (doc.exists) {
-                that.setState({dbUser: doc.data()});
+                var dbUser = doc.data();
+                dbUser.id = doc.id;
+                that.setState({dbUser: dbUser});
             } else {
                 console.log("User doc not found for " + that.state.user.uid);
             }
