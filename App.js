@@ -10,6 +10,7 @@ import Income from './screens/Income';
 import Accounts from './screens/Accounts';
 import AccountDetails from './screens/AccountDetails';
 import AccountSummary from './screens/AccountSummary';
+import AccountTransactions from './screens/AccountTransactions';
 
 import {f, auth, database} from './config/config';
 import { TextInput } from 'react-native-gesture-handler';
@@ -26,6 +27,7 @@ const MainStack = createAppContainer(createStackNavigator(
     Expenses: { screen: Expenses },
     AccountDetails: { screen: AccountDetails },
     AccountSummary: { screen: AccountSummary },
+    AccountTransactions: { screen: AccountTransactions },
   },
   {
     defaultNavigationOptions: {

@@ -48,6 +48,7 @@ import {
 
     render() {
         const styles = appStyle();
+        const navigate = this.props.navigation.navigate;
         return (
             <View style={styles.container}>
             { this.state.loggedin == true ? (
@@ -80,7 +81,7 @@ import {
                     <View style={{marginLeft: 20, flexDirection: "row", justifyContent: "evenly-spaced"}}>
                         <Button title="Add Expense" />
                         <Button title="Add Income" />
-                        <Button title="Monthly View" />
+                        <Button onPress={() => {this.props.navigation.navigate('AccountTransactions'), {dbUser: this.state.dbUser, account: this.state.account}}} title="Transactions" />
                     </View>
                 </View>
             ) : (
