@@ -85,16 +85,16 @@ import {
     save = async() => {
         var that = this;
        if (this.state.editing) {
-           console.log("Updating account " + that.state.account.id);
            f.firestore().collection("accounts").doc(that.state.account.id)
            .update({
             accountName: that.state.accountName,
             accountNo: that.state.accountNumber,
             accountType: that.state.accountType,
             openingBalance: parseFloat(that.state.accountBalance),
-            balanceAsOf: that.state.asOfDate
+            balanceAsOf: that.state.asOfDate,
+            currentBalance: parseFloat(that.state.accountBalance) - that.state.account.allDebits + that.state.account.allCredits,
+            updatedOn: new Date()
            }).then(function(){
-            console.log("Updated account");
             that.props.navigation.navigate('Accounts');
         }).catch(function (error) {
             console.log("Error when updating account: " + error);
@@ -104,7 +104,6 @@ import {
             })
         })
        } else {
-            console.log("Adding new account...")
             f.firestore().collection("accounts").add({
                 accountName: that.state.accountName,
                 accountNo: that.state.accountNumber,
@@ -115,10 +114,10 @@ import {
                 currency: that.state.dbUser.defaultCurrency,
                 uid: that.state.user.uid,
                 createdOn: new Date(),
+                updatedOn: new Date(),
                 allCredits: 0,
                 allDebits: 0
             }).then(function (accountRef) {
-                console.log("Saved new account: " + accountRef.id);
                 that.props.navigation.navigate('Accounts');
             }).catch(function (error) {
                 console.log("Error when saving account: " + error);
