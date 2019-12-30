@@ -47,11 +47,14 @@ import {
             snapshot.forEach(function(doc) {
                 var account = doc.data();
                 var epoch = account.createdOn.seconds;
-                if (account.balanceAsOf)
+                if (account.balanceAsOf) {
                     epoch = account.balanceAsOf.seconds;
+                } else {
+                    account.balanceAsOf = account.createdOn;
+                }
 
                 var asOf = new Date(epoch * 1000);
-                
+                account.dbUser = that.state.dbUser;
                 account.id = doc.id;
                 account.formattedValue = addCommas(account.currentBalance);
                 account.navigation = that.props.navigation;
@@ -74,7 +77,7 @@ import {
         title: 'Accounts',
         headerRight: () => (
             <Button
-              onPress={() =>  navigation.navigate('AccountDetails')}
+              onPress={() =>  navigation.navigate('AccountDetails', {editing: false, dbUser: navigation.getParam('dbUser', null), account: null})}
               title="New Account"
             />
           ),
@@ -86,7 +89,7 @@ import {
         return (
             
             <TouchableOpacity onPress={() => {
-                item.navigation.navigate('AccountSummary', {account: item, accountName: item.accountName});
+                item.navigation.navigate('AccountSummary', {account: item, accountName: item.accountName, dbUser: item.dbUser});
             }}>
                 
                 <View style={styles.rowStyle}>

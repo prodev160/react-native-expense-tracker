@@ -11,20 +11,25 @@ import {
  class AccountDetails extends React.Component {
     constructor(props) {
         super(props);
+        var editing = this.props.navigation.state.params.editing;
+        var account = this.props.navigation.state.params.account;
         this.state = {
             user: null,
-            dbUser: null,
+            dbUser: this.props.navigation.state.params.dbUser,
+            account: account,
+            editing: editing,
             loggedin: false,
             saveError: false,
             errorMessage: '',
-            accountName: '',
-            accountNumber: '',
-            accountType: 'Cash',
-            accountBalance: 0.00,
-            asOfDate: new Date(),
+            accountName: editing ? account.accountName : '',
+            accountNumber: editing ? account.accountNo : '',
+            accountType: editing ? account.accountType : 'Cash',
+            accountBalance: editing ? account.openingBalance.toString() : '0.00',
+            asOfDate: editing ? new Date(account.balanceAsOf.seconds * 1000) : new Date(),
             showAsOf: false,
             mode: 'date',
-        }
+        };
+       
     }
 
     setAsOfDate = (event, asOfDate) => {
@@ -54,7 +59,7 @@ import {
                     loggedin: true,
                     user: user
                 });
-                that.loadUser();
+                //that.loadUser();
             } else {
                 //Not logged in
                 that.setState({
@@ -79,29 +84,50 @@ import {
 
     save = async() => {
         var that = this;
-        console.log("Saving account...")
-        f.firestore().collection("accounts").add({
+       if (this.state.editing) {
+           console.log("Updating account " + that.state.account.id);
+           f.firestore().collection("accounts").doc(that.state.account.id)
+           .update({
             accountName: that.state.accountName,
             accountNo: that.state.accountNumber,
             accountType: that.state.accountType,
             openingBalance: parseFloat(that.state.accountBalance),
-            balanceAsOf: that.state.asOfDate,
-            currentBalance: parseFloat(that.state.accountBalance),
-            currency: that.state.dbUser.defaultCurrency,
-            uid: that.state.user.uid,
-            createdOn: new Date(),
-            allCredits: 0,
-            allDebits: 0
-        }).then(function (accountRef) {
-            console.log("Saved new account: " + accountRef.id);
+            balanceAsOf: that.state.asOfDate
+           }).then(function(){
+            console.log("Updated account");
             that.props.navigation.navigate('Accounts');
         }).catch(function (error) {
-            console.log("Error when saving account: " + error);
+            console.log("Error when updating account: " + error);
             that.setState({
                 error: true,
                 errorMessage: error
             })
         })
+       } else {
+            console.log("Adding new account...")
+            f.firestore().collection("accounts").add({
+                accountName: that.state.accountName,
+                accountNo: that.state.accountNumber,
+                accountType: that.state.accountType,
+                openingBalance: parseFloat(that.state.accountBalance),
+                balanceAsOf: that.state.asOfDate,
+                currentBalance: parseFloat(that.state.accountBalance),
+                currency: that.state.dbUser.defaultCurrency,
+                uid: that.state.user.uid,
+                createdOn: new Date(),
+                allCredits: 0,
+                allDebits: 0
+            }).then(function (accountRef) {
+                console.log("Saved new account: " + accountRef.id);
+                that.props.navigation.navigate('Accounts');
+            }).catch(function (error) {
+                console.log("Error when saving account: " + error);
+                that.setState({
+                    error: true,
+                    errorMessage: error
+                })
+            })
+       }
     }
 
     hideDateSelectorIos = () => {

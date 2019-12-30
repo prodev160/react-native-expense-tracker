@@ -37,6 +37,12 @@ import {
     static navigationOptions = ({navigation}) => {
         return {
             title: navigation.getParam('accountName', 'Account Summary'),
+            headerRight: () => (
+                <Button
+                  onPress={() =>  navigation.navigate('AccountDetails', {editing: true, account: navigation.getParam('account', null), dbUser: navigation.getParam('dbUser', null)})}
+                  title="Edit"
+                />
+              ),
         }
     };
 
