@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     rowStyle: {
         marginHorizontal:  10, 
         borderBottomWidth: 1, 
-        borderBottomColor: "grey"
+        borderBottomColor: "lightgrey"
     },
     dashboardWidgetContainer: {
         flexDirection: "row", 

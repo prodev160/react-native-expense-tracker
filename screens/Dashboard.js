@@ -329,7 +329,7 @@ import {
                                         </View>
                                     </View>
                                     <View style={{flex: 1, margin: 10, paddingTop: 60}}>
-                                        <TouchableOpacity onPress={() => (navigate('Transfers'))} >
+                                        <TouchableOpacity onPress={() => (navigate('Transfers', {dbUser: this.state.dbUser}))} >
                                             <View style={styles.dashboardWidgetContainer}>
                                                 <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
                                                 <Text style={{flex: 1, marginTop: 5, fontWeight: "bold", fontSize: 18}}>Transfers</Text>

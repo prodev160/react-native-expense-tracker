@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Text, View, FlatList, TouchableOpacity, Button, SafeAreaView
  } from 'react-native';
+ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
  import {f, auth, database } from '../config/config';
  import appStyle from '../config/style';
@@ -108,14 +109,24 @@ import {
         return (
             <SafeAreaView style={styles.container}>
             { this.state.loggedin == true ? (
-                <View style={{flex: 1}}>
-                    <FlatList
-                        data = {this.state.accounts}
-                        keyExtractor={(item, index) => index.toString()}
-                        onRefresh={this.fetchAccounts}
-                        refreshing={this.state.refreshing}
-                        renderItem={this.renderRow}
-                    />
+                <View style={styles.container}>
+                    <View style={styles.container}>
+                        <FlatList
+                            data = {this.state.accounts}
+                            keyExtractor={(item, index) => index.toString()}
+                            onRefresh={this.fetchAccounts}
+                            refreshing={this.state.refreshing}
+                            renderItem={this.renderRow}
+                        />
+                    </View>
+                    <View style={{padding: 10, backgroundColor:"lightgrey", flexDirection: "row", justifyContent: "flex-start"}}>
+                       <TouchableOpacity>
+                        <View style={{alignItems: "center"}}>
+                                <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
+                                <Text>Transfers</Text>
+                            </View>
+                       </TouchableOpacity>
+                    </View>
                 </View>
             ) : (
                 <View>
