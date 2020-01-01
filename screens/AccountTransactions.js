@@ -23,7 +23,7 @@ import {
 
     getTransactions = () => {
         var that = this;
-
+        this.setState({loading: true});
         f.firestore().collection("transactions")
         .where("owner", "==", that.state.dbUser.id)
         .orderBy("transactionDate")
@@ -38,10 +38,52 @@ import {
                 if (transaction.debitAccountId == that.state.account.id ||
                     transaction.creditAccountId == that.state.account.id
                     ) {
+                        transaction.transferDesc = "Unknown Account";
+                        if (transaction.transType == "Transfer") {
+                            if (transaction.debitAccountId == that.state.account.id) {
+                                //Get credit account name
+                                f.firestore().collection("accounts")
+                                .doc(transaction.creditAccountId)
+                                .get()
+                                .then(function (doc) {
+                                    if (doc.exists) {
+                                        var transes = that.state.transactions;
+                                        for (var i = 0; i < transes.length; i++) {
+                                            var trans = transes[i];
+                                            if (trans.transType == "Transfer" && trans.creditAccountId == transaction.creditAccountId) {
+                                                trans.transferDesc == doc.data().accountName;
+                                            }
+                                            that.setState({transactions: transes})
+                                        }
+                                    } 
+                                }).catch(function (err){
+                                    console.log(err);
+                                })
+                            } else {
+                                //Get debit account name
+                                f.firestore().collection("accounts")
+                                .doc(transaction.debitAccountId)
+                                .get()
+                                .then(function (doc) {
+                                    if (doc.exists) {
+                                        var transes = that.state.transactions;
+                                        for (var i = 0; i < transes.length; i++) {
+                                            var trans = transes[i];
+                                            if (trans.transType == "Transfer" && trans.debitAccountId == transaction.debitAccountId) {
+                                                trans.transferDesc == doc.data().accountName;
+                                            }
+                                            that.setState({transactions: transes})
+                                        }
+                                    }
+                                }).catch(function (err){
+                                    console.log(err);
+                                })
+                            }
+                        }
                         transactions.push(transaction);
                     }
             });
-            that.setState({transactions: transactions});
+            that.setState({transactions: transactions, loading: false});
         })
     }
 
@@ -79,6 +121,29 @@ import {
             }}>
                 
                 <View style={styles.rowStyle}>
+                    {item.transType == "Transfer" ? (
+                        <View>
+                            <Text style={{fontWeight: "bold"}}>{item.transType}</Text>
+                            <Text>{item.prettyDate}</Text>
+                            {
+                                item.transType == "Income" 
+                                ? 
+                                (
+                                    <View>
+                                        <Text>From: {item.transferDesc}</Text>
+                                        <Text style={{color: "green"}}>{item.currency}{addCommas(item.transactionAmount)}</Text>
+                                    </View>
+                                )
+                                : 
+                                (
+                                    <View>
+                                        <Text>To: {item.transferDesc}</Text>
+                                        <Text style={{color: "red"}}>{item.currency}{addCommas(item.transactionAmount)}</Text>
+                                    </View>
+                                )}
+                        </View>
+                    )
+                    : (
                     <View>
                         <Text style={{fontWeight: "bold"}}>{item.transType}</Text>
                         <Text style={{fontWeight: "bold"}}>{item.description}</Text>
@@ -86,6 +151,7 @@ import {
                         {item.transType == "Income" ? (<Text style={{color: "green"}}>{item.currency}{addCommas(item.transactionAmount)}</Text>)
                         : (<Text style={{color: "red"}}>{item.currency}{addCommas(item.transactionAmount)}</Text>)}
                     </View>
+                    )}
                 </View>
             </TouchableOpacity>
         )
