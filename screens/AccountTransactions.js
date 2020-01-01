@@ -38,52 +38,32 @@ import {
                 if (transaction.debitAccountId == that.state.account.id ||
                     transaction.creditAccountId == that.state.account.id
                     ) {
-                        transaction.transferDesc = "Unknown Account";
-                        if (transaction.transType == "Transfer") {
-                            if (transaction.debitAccountId == that.state.account.id) {
-                                //Get credit account name
-                                f.firestore().collection("accounts")
-                                .doc(transaction.creditAccountId)
-                                .get()
-                                .then(function (doc) {
-                                    if (doc.exists) {
-                                        var transes = that.state.transactions;
-                                        for (var i = 0; i < transes.length; i++) {
-                                            var trans = transes[i];
-                                            if (trans.transType == "Transfer" && trans.creditAccountId == transaction.creditAccountId) {
-                                                trans.transferDesc == doc.data().accountName;
-                                            }
-                                            that.setState({transactions: transes})
-                                        }
-                                    } 
-                                }).catch(function (err){
-                                    console.log(err);
-                                })
-                            } else {
-                                //Get debit account name
-                                f.firestore().collection("accounts")
-                                .doc(transaction.debitAccountId)
-                                .get()
-                                .then(function (doc) {
-                                    if (doc.exists) {
-                                        var transes = that.state.transactions;
-                                        for (var i = 0; i < transes.length; i++) {
-                                            var trans = transes[i];
-                                            if (trans.transType == "Transfer" && trans.debitAccountId == transaction.debitAccountId) {
-                                                trans.transferDesc == doc.data().accountName;
-                                            }
-                                            that.setState({transactions: transes})
-                                        }
-                                    }
-                                }).catch(function (err){
-                                    console.log(err);
-                                })
-                            }
-                        }
                         transactions.push(transaction);
                     }
             });
             that.setState({transactions: transactions, loading: false});
+            for (var t = 0; t < transactions.length; t++) {
+                var transaction = transactions[t];
+                if (transaction.transType == "Transfer") {
+                    transaction.transferDesc = "Unk";
+                    var accountId = transaction.debitAccountId;
+                    if (transaction.debitAccountId == that.state.debitAccountId)
+                        accountId = transaction.creditAccountId;
+                    
+                    f.firestore().collection("accounts")
+                    .doc(accountId)
+                    .get()
+                    .then(function (doc) {
+                        if (doc.exists) {
+                            transaction.transferDesc = doc.data().accountName;
+                            that.setState({transactions: transactions, loading: false});
+                            
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            }
         })
     }
 
