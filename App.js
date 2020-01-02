@@ -12,6 +12,7 @@ import AccountDetails from './screens/AccountDetails';
 import AccountSummary from './screens/AccountSummary';
 import AccountTransactions from './screens/AccountTransactions';
 import Transfers from './screens/Transfers';
+import Transfer from './screens/Transfer';
 
 import {f, auth, database} from './config/config';
 import { TextInput } from 'react-native-gesture-handler';
@@ -30,6 +31,7 @@ const MainStack = createAppContainer(createStackNavigator(
     AccountSummary: { screen: AccountSummary },
     AccountTransactions: { screen: AccountTransactions },
     Transfers: {screen: Transfers},
+    Transfer: {screen: Transfer},
   },
   {
     defaultNavigationOptions: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Text, View, FlatList, TouchableOpacity
+    Text, View, FlatList, TouchableOpacity, Button
  } from 'react-native';
 
  import {f, auth, database } from '../config/config';
@@ -17,7 +17,6 @@ import {
             refreshing: false,
             user: [],
         };
-        this.getTransactions();
     }
 
     getTransactions = () => {
@@ -50,6 +49,7 @@ import {
                     loggedin: true,
                     user: user
                 });
+                that.getTransactions();
             } else {
                 //Not logged in
                 that.setState({
@@ -62,6 +62,12 @@ import {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Transfers',
+            headerRight: () => (
+                <Button
+                  onPress={() =>  navigation.navigate('Transfer', {editing: false, dbUser: navigation.getParam('dbUser', null)})}
+                  title="New Transfer"
+                />
+              ),
         }
     };
 

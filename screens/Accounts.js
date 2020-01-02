@@ -106,6 +106,7 @@ import {
 
     render() {
         const styles = appStyle();
+        const { navigate } = this.props.navigation;
         return (
             <SafeAreaView style={styles.container}>
             { this.state.loggedin == true ? (
@@ -120,7 +121,7 @@ import {
                         />
                     </View>
                     <View style={{padding: 10, backgroundColor:"lightgrey", flexDirection: "row", justifyContent: "flex-start"}}>
-                       <TouchableOpacity>
+                       <TouchableOpacity onPress={() => (navigate('Transfers', {dbUser: this.state.dbUser}))}>
                         <View style={{alignItems: "center"}}>
                                 <MaterialCommunityIcons name="rotate-3d" size={32} color="blue" />
                                 <Text>Transfers</Text>
