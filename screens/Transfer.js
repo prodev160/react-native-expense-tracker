@@ -45,6 +45,7 @@ import {
             refreshing: false,
             showTransferDate: false,
             user: [],
+            mode: 'date',
         };
     }
 
@@ -73,9 +74,11 @@ import {
     };
 
     setTransferDate = (event, transferDate) => {
+        var transfer = this.state.transfer;
+        transfer.transferDate = transferDate;
         this.setState({
             showTransferDate: Platform.OS === 'ios' ? true : false,
-            transferDate
+            transfer
         })
     }
 
@@ -100,7 +103,6 @@ import {
             <View style={styles.container}>
             { this.state.loggedin == true ? (
                 <View style={{flex: 1, alignItems: "center"}}>
-                    <Text>Date</Text>
                     <TextInput
                         style={styles.inputBox}
                         onTouchStart={this.datepicker}

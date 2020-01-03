@@ -16,7 +16,7 @@ import {
             dbUser: this.props.navigation.state.params.dbUser,
             user: null,
             accounts: [],
-            refreshing: false,
+            refreshing: false
         }
     }
 
