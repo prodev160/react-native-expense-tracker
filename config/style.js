@@ -21,6 +21,15 @@ const styles = StyleSheet.create({
         borderColor: '#d3d3d3',
         borderBottomWidth: 1,
     },
+    boxInputBox: {
+        width: '85%',
+        margin: 10,
+        padding: 15,
+        fontSize: 16,
+        borderColor: '#d3d3d3',
+        borderWidth: 1,
+        borderRadius: 5,
+    },
     dashboardWidgetText: {
         fontSize: 18,
         fontWeight: "bold",
@@ -58,6 +67,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff'
     },
+    blueButtonText: {
+        fontSize: 18,
+        color: 'white',
+        alignSelf: 'center'
+      },
+      blueButton: {
+        height: 36,
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
+        alignSelf: 'stretch',
+        justifyContent: 'center'
+      },
     buttonSignup: {
         fontSize: 12
     },

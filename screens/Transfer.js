@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Text, View, FlatList, TouchableOpacity, TextInput, Button
+    Text, View, TouchableHighlight
  } from 'react-native';
  import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -8,19 +8,22 @@ import {
  import appStyle from '../config/style';
  import addCommas from  '../config/functions';
 
+ import t from 'tcomb-form-native';
+ 
+
  class TransferObject {
     constructor(
-        transferDate,
-        fromAccountID,
-        toAccountID,
+        date,
+        source,
+        destination,
         amount,
         notes,
         owner,
         id
     ) {
-        this.transferDate = transferDate;
-        this.fromAccountID = fromAccountID;
-        this.toAccountID = toAccountID;
+        this.date = date;
+        this.source = source;
+        this.destination = destination;
         this.amount = amount;
         this.notes = notes;
         this.owner = owner;
@@ -42,11 +45,29 @@ import {
                 '',
                 this.props.navigation.state.params.dbUser.uid
             ),
-            refreshing: false,
-            showTransferDate: false,
             user: [],
-            mode: 'date',
+            genders:  t.enums({
+                M: 'Male',
+                F: 'Female'
+            }),
+            accounts: [],
         };
+        
+    }
+
+    getAccounts() {
+
+    }
+
+    onChange(value) {
+        //this.setState({transfer: value});
+    }
+    
+    onPress = ()  => {
+        var value = this.refs.form.getValue();
+        if (value) {
+            console.log(value);
+        }
     }
 
     componentDidMount = () => {
@@ -58,6 +79,7 @@ import {
                     loggedin: true,
                     user: user
                 });
+                that.getAccounts();
             } else {
                 //Not logged in
                 that.setState({
@@ -73,55 +95,31 @@ import {
         }
     };
 
-    setTransferDate = (event, transferDate) => {
-        var transfer = this.state.transfer;
-        transfer.transferDate = transferDate;
-        this.setState({
-            showTransferDate: Platform.OS === 'ios' ? true : false,
-            transfer
-        })
-    }
-
-    show = mode => {
-        this.setState({
-            showTransferDate: true,
-            mode
-        })
-    }
-
-    datepicker = () => {
-        this.show('date');
-    }
-
-    hideDateSelectorIos = () => {
-        this.setState({showTransferDate: false})
-    }
 
     render() {
         const styles = appStyle();
+        var Form = t.form.Form;
+ 
+        var TransferForm = t.struct({
+            date: t.Date,            
+            source: t.String,  
+            destination: t.String,
+            amount: t.Number,   
+            notes: t.maybe(t.String)   ,
+            gender: this.state.genders   
+          });
         return (
             <View style={styles.container}>
             { this.state.loggedin == true ? (
-                <View style={{flex: 1, alignItems: "center"}}>
-                    <TextInput
-                        style={styles.inputBox}
-                        onTouchStart={this.datepicker}
-                        editable={false}
-                        value={'Transfer Date : ' + this.state.transfer.transferDate.toDateString()}
+                <View style={styles.container, {margin: 10}}>
+                    <Form 
+                        type={TransferForm}
+                        value={this.state.transfer}
+                        onChange={this.onChange}
                     />
-                    {
-                        this.state.showTransferDate && 
-                        <View style={{width: '100%'}}>
-                            <DateTimePicker value={this.state.transfer.transferDate}
-                                        mode={this.state.mode}
-                                        is24hour={true}
-                                        display="default"
-                                        onChange={this.setTransferDate} />
-                            <View style={{alignItems: "center"}}>
-                                {Platform.OS === 'ios' && <Button onPress={this.hideDateSelectorIos} title="Set Date"></Button> }
-                            </View>
-                        </View>
-                    }
+                    <TouchableHighlight style={styles.button} onPress={this.onSave} underlayColor='#99d9f4'>
+                        <Text style={styles.buttonText}>Save</Text>
+                    </TouchableHighlight>
                 </View>
             ) : (
                 <View>
