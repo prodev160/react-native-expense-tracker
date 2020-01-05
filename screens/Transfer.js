@@ -52,6 +52,7 @@ import {
                 F: 'Female'
             }),
             accounts: t.enums({}),
+            accountList: []
         };
         
     }
@@ -63,10 +64,14 @@ import {
         .get()
         .then(function (snapshot) {
             var accounts = [];
+            var accountList = [];
             snapshot.forEach(function(doc) {
-                accounts.push(doc.data().accountName);
+                var account = doc.data();
+                account.accountId = doc.id;
+                accounts.push(account.accountName);
+                accountList.push(account);
             })
-            that.setState({accounts: t.enums.of(accounts, 'Accounts')});
+            that.setState({accounts: t.enums.of(accounts, 'Accounts'), accountList});
         })
         .catch(function (error) {
             console.log(error);
@@ -79,10 +84,45 @@ import {
     
     onSave = () => {
         var that = this;
-        console.log('pressed');
         if (that.refs.form) {
-            var value = this.refs.form.getValue();
-            console.log(this.state.transfer);
+            var transfer = this.state.transfer;
+            if (this.state.transfer.source) {
+                for (var i = 0; i < this.state.accountList.length; i++) {
+                    var account = this.state.accountList[i];
+                    console.log(account.accountName, transfer.source);
+                    if (account.accountName == transfer.source)
+                        transfer.sourceAccountId = account.accountId;
+                }
+            } 
+            if (this.state.transfer.destination) {
+                for (var i = 0; i < this.state.accountList.length; i++) {
+                    var account = this.state.accountList[i];
+                    console.log(account.accountName, transfer.destination);
+                    if (account.accountName == transfer.destination)
+                        transfer.destinationAccountId = account.accountId;
+                }
+            } 
+            this.setState({transfer});
+            f.firestore().collection("transactions")
+            .add({
+                creditAccountId: transfer.destinationAccountId,
+                debitAccoutID: transfer.sourceAccountId,
+                currency: "USD",
+                transType: "Transfer",
+                notes: transfer.notes,
+                owner: that.state.user.uid,
+                transactionDate: transfer.date,
+                transactionAmount: parseFloat(transfer.amount),
+                creditorId: "",
+                debitorId: "",
+                categoryId: "",
+                subCategoryId: "",
+                timestamp: new Date()
+            }).then(function (obj) {
+                
+            }).catch(function (err) {
+                console.log(err);
+            });
         }
     }
 
