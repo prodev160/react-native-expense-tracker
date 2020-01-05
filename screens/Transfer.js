@@ -9,6 +9,7 @@ import {
  import addCommas from  '../config/functions';
 
  import t from 'tcomb-form-native';
+ import moment from 'moment';
  
 
  class TransferObject {
@@ -50,23 +51,38 @@ import {
                 M: 'Male',
                 F: 'Female'
             }),
-            accounts: [],
+            accounts: t.enums({}),
         };
         
     }
 
     getAccounts() {
-
+        var that = this;
+        f.firestore().collection("accounts")
+        .where("uid", "==", that.state.user.uid)
+        .get()
+        .then(function (snapshot) {
+            var accounts = [];
+            snapshot.forEach(function(doc) {
+                accounts.push(doc.data().accountName);
+            })
+            that.setState({accounts: t.enums.of(accounts, 'Accounts')});
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
     }
 
-    onChange(value) {
-        //this.setState({transfer: value});
+    onChange = (value) => {
+        this.setState({transfer: value});
     }
     
-    onPress = ()  => {
-        var value = this.refs.form.getValue();
-        if (value) {
-            console.log(value);
+    onSave = () => {
+        var that = this;
+        console.log('pressed');
+        if (that.refs.form) {
+            var value = this.refs.form.getValue();
+            console.log(this.state.transfer);
         }
     }
 
@@ -102,23 +118,43 @@ import {
  
         var TransferForm = t.struct({
             date: t.Date,            
-            source: t.String,  
-            destination: t.String,
+            source: this.state.accounts,  
+            destination: this.state.accounts,
             amount: t.Number,   
-            notes: t.maybe(t.String)   ,
-            gender: this.state.genders   
-          });
+            notes: t.maybe(t.String) 
+         });
+
+        var options = {
+        fields: {
+            date: {
+                mode: 'date',
+                label: 'Transfer Date',
+                error: '',
+                config: {
+                    format: (date) => {
+                        return moment(date).format('ddd DD MMM YYYY');
+                    },
+                    dateFormat: (date) => {
+                        return moment(date).format('ddd DD MMM YYYY');
+                    },
+                }
+            }
+        }
+        };
+          
         return (
             <View style={styles.container}>
             { this.state.loggedin == true ? (
                 <View style={styles.container, {margin: 10}}>
                     <Form 
+                        ref="form"
                         type={TransferForm}
+                        options={options}
                         value={this.state.transfer}
                         onChange={this.onChange}
                     />
-                    <TouchableHighlight style={styles.button} onPress={this.onSave} underlayColor='#99d9f4'>
-                        <Text style={styles.buttonText}>Save</Text>
+                    <TouchableHighlight style={styles.blueButton} onPress={this.onSave} underlayColor='#99d9f4'>
+                        <Text style={styles.blueButtonText}>Save</Text>
                     </TouchableHighlight>
                 </View>
             ) : (
