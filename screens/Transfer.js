@@ -11,6 +11,7 @@ import {
  import t from 'tcomb-form-native';
  import moment from 'moment';
  
+ import { debitAccount, creditAccount, transferMoney} from '../services/AccountService';
 
  class TransferObject {
     constructor(
@@ -119,7 +120,10 @@ import {
                 subCategoryId: "",
                 timestamp: new Date()
             }).then(function (obj) {
-                
+                var transfer = that.state.transfer;
+                debitAccount(transfer.sourceAccountId, transfer.amount);
+                creditAccount(transfer.destinationAccountId, transfer.amount);
+                that.props.navigation.navigate('Transfers', {dbUser: that.state.dbUser});
             }).catch(function (err) {
                 console.log(err);
             });

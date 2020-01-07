@@ -1,14 +1,33 @@
 import {f, auth, database } from '../config/config';
 
-function debitAccount(accountId, amount) {
-
+export function debitAccount(accountId, amount) {
+    console.log('debiting ' + accountId + ' with ' + amount);
+    creditAccount(accountId, 0 - amount);
 }
 
-function creditAccount(accountId, amount) {
-
+export function creditAccount(accountId, amount) {
+    console.log('crediting ' + accountId + ' with ' + amount);
+    f.firestore().collection("accounts").doc(accountId)
+    .get()
+    .then(function(doc) {
+        if (doc.exists) {
+            var account = doc.data();
+            var accountBalance = parseFloat(account.currentBalance);
+            accountBalance += amount;
+            f.firestore().collection("accounts").doc(doc.id)
+            .update({currentBalance: accountBalance});
+        }
+    })
 }
 
-function transferMoney(
+export function getAccount(accountId) {
+    f.firestore().collection("accounts").doc(accountId)
+    .get(function (snapshot) {
+        
+    })
+}
+
+export function transferMoney(
     debitAccount,
     creditAccount,
     currency,
