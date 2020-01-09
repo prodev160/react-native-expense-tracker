@@ -78,10 +78,6 @@ import {
             console.log(error);
         })
     }
-
-    onChange = (value) => {
-        this.setState({transfer: value});
-    }
     
     onSave = () => {
         var that = this;
@@ -129,6 +125,16 @@ import {
             });
         }
     }
+    
+     onChange = (value) => {
+        this.setState({transfer: value});
+    }
+
+     static navigationOptions = ({navigation}) => {
+        return {
+            title: 'Transfer'
+        }
+    };
 
     componentDidMount = () => {
         var that = this;
@@ -148,12 +154,6 @@ import {
             }
         });
     }
-
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Transfer'
-        }
-    };
 
 
     render() {
